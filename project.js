@@ -127,19 +127,56 @@ const transpose = (reels) => { // transposing recontructs the diplay of the reel
 } 
  console.log(rowString);
 }
- }
+ };
 
+ const getWinnings = (rows, bet, lines) => {
+   let winnings = 0;
 
+   for (let row= 0; row < lines; row++) {
+      const symbols = rows[row];
+      let allSame = true;
+
+      for (const symbol of symbols) {
+         if (symbol != symbols[0]) {
+            allSame = false;
+            break;
+         }
+      }
+
+      if (allSame) {
+         winnings += bet * SYMBOL_VALUES[symbols[0]];
+      }
+   }
+   return winnings;
+ };
+
+ const game = () => {
 
 
 let balance = deposit();
+
+while (true) {
+   console.log(" You have a balance of $" + balance);
 const numberOfLines = getNumberOfLines();
-const bet = getBet(balance, numberOfLines);
+const bet = getBet(balance, getNumberOfLines);
+balance -= bet * numberOfLines;
 const reels = spin();
 const rows = transpose(reels);
 printRows(rows);
+const winnings = getWinnings(rows, bet, numberOfLines)
+balance += winnings;
+console.log("YOU WON, $" + winnings.toString());
 
+if (balance <=0) {
+   console.log("Yuh BuSS");
+   break;
 
+}
+const playAgain = readlineSync.question("You wah Go Again?");
 
+if (playAgain != "y") break;
 
-//}
+}
+ };
+
+game();
